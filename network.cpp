@@ -187,6 +187,32 @@ void Network::distribute_puzzle()
     }
 }
 
+void Network::assign_neighbors2( char *infile )
+{
+    std::string line;
+    std::string search = "*Arcs";
+    std::ifstream neighbor_input( infile );
+    std::vector<vertex>* vptr;
+    std::set<int>* sptr;
+
+    if ( neighbor_input.is_open() )
+    {
+        while ( std::getline( neighbor_input, line ) )
+        {
+           if ( line.find(search, 0) != std::string::npos )
+               break;
+        }
+        
+        while ( std::getline( neighbor_input, line ) )
+        {
+            int values[2];
+            std::istringstream(line) >> values[0] >> values[1];
+            ((network.at(values[0])).neighbors).insert(values[1]);
+            std::cout << values[0] << '\t' << values[1] << std::endl;
+        }
+    }
+}
+
 // this method need to be adjusted so that the input is a stream
 void Network::assign_neighbors( char *infile )
 {   
@@ -205,7 +231,6 @@ void Network::assign_neighbors( char *infile )
             {
                 if ( ss.peek() == ' ' )
                     ss.ignore();
-
                 if ( i >= 0 )
                     (vecIt->neighbors).insert(i);
                 else

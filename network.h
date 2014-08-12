@@ -37,6 +37,7 @@ class Network {
         void printPiecesLeft();
         void distribute_puzzle();
         void assign_neighbors( char * );
+        void assign_neighbors2( char * );
         vertex* pick_random_vertex();
         int pick_random_has( vertex* );
         int pick_random_knows( vertex* );
