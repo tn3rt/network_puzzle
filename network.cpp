@@ -30,6 +30,11 @@ Network::Network( int net_size, int puz_size, int z )
     }
 }
 
+int Network::getNetworkSize()
+{
+    return network_size;
+}
+
 void Network::networkReset()
 {
     solved_puzzle.clear();
@@ -187,6 +192,15 @@ void Network::distribute_puzzle()
     }
 }
 
+void Network::assign_neighbors3( std::vector< std::pair< int, int > > edge_vector )
+{
+    for ( std::vector< std::pair< int, int > >::iterator it = edge_vector.begin(); it != edge_vector.end(); ++it )
+    {
+        ((network.at( (*it).first )).neighbors).insert( (*it).second );
+    }
+}
+
+
 void Network::assign_neighbors2( char *infile )
 {
     std::string line;
@@ -303,11 +317,12 @@ void Network::solve_step()
 
     // does neighbor have left or right to match p?
     // periodic puzzle boundary conditions
-    puzzle_size==p+1 ? right=0 : right=p+1;
+    //puzzle_size==p+1 ? right=0 : right=p+1;
+    (p+1)==puzzle_size ? right=0 : right=p+1;
     p==0 ? left=puzzle_size-1 : left=p-1;
 
     bool k = false;
-    // if the neighbor knows about a connecint piece, it is connected immediately
+    // if the neighbor knows about a connecing piece, it is connected immediately
     if ( (neighbor_ptr->knows).find(right) != (neighbor_ptr->knows).end() )
     {
         (solved_puzzle.at(p)).second=right;
@@ -392,6 +407,7 @@ vertex* Network::pick_random_vertex()
     int rand = network_udist(gen);
     //std::cout << "Random Vertex..." << rand << std::endl;
     vertex* v_ptr = &network.at(rand);
+    //std::cout << "made it. " << std::endl;
     //vertex* v_ptr = &network.at(network_udist(gen));
     return v_ptr;
 }

@@ -21,6 +21,7 @@ class Network {
         std::set<int> pieces_left;
     public:
         Network( int, int, int );
+        int getNetworkSize();
         void networkReset();
         bool insertHas( std::size_t, int );
         std::set<int> getHas( std::size_t );
@@ -38,6 +39,7 @@ class Network {
         void distribute_puzzle();
         void assign_neighbors( char * );
         void assign_neighbors2( char * );
+        void assign_neighbors3( std::vector< std::pair< int, int > >);
         vertex* pick_random_vertex();
         int pick_random_has( vertex* );
         int pick_random_knows( vertex* );

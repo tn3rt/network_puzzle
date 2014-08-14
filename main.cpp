@@ -7,34 +7,41 @@
 #include <vector>
 #include <random>
 #include "network.h"
+#include "pajek.h"
 
 typedef std::set<int>::iterator setIt;
 
 int main(int argc, char *argv[])
 {
-    if (argc < 3)
-        std::cout << "Usage: " << argv[0] << " <output filename> <puzzle size> <network size> <input file>" << std::endl;
+    if (argc < 4)
+        std::cout << "Usage: " << argv[0] << " <output filename> <puzzle size> <input file>" << std::endl;
 
     int count = 1;
     std::ofstream myFile;
     myFile.open(argv[1], std::ios::app );
     
+    Pajek myPajek( argv[3] );
+    int network_size = myPajek.setVertices();
+
     const int puzzle_size = atoi(argv[2]);
-    const int network_size = atoi(argv[3]);
+    //const int network_size = atoi(argv[3]);
     const int coordination_number = 2;
 
     //std::vector<int> solve_times;
 
     Network myNetwork( network_size, puzzle_size, coordination_number );
 //    myNetwork.assign_neighbors(argv[4]);
-    myNetwork.assign_neighbors2(argv[4]);
-    myNetwork.printNetworkNeighbors();
+    
+    myPajek.setEdges();
+    myPajek.convert_format();
+    myNetwork.assign_neighbors3( myPajek.getEdges() );
 
     int j;
     std::cout << "pause" << std::endl;
     std::cin >> j; 
 
     myNetwork.distribute_puzzle();
+
 //    while(1)
     for (int i=0; i<10000; ++i)
     {
