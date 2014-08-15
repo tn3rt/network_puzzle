@@ -24,21 +24,17 @@ int main(int argc, char *argv[])
     int network_size = myPajek.setVertices();
 
     const int puzzle_size = atoi(argv[2]);
-    //const int network_size = atoi(argv[3]);
     const int coordination_number = 2;
 
-    //std::vector<int> solve_times;
-
     Network myNetwork( network_size, puzzle_size, coordination_number );
-//    myNetwork.assign_neighbors(argv[4]);
     
-    myPajek.setEdges();
+    //myPajek.setArcs();
+    myPajek.setEdgeslist();
     myPajek.convert_format();
-    myNetwork.assign_neighbors3( myPajek.getEdges() );
+    //myNetwork.assign_arcs_neighbors( myPajek.getArcs() );
+    myNetwork.assign_edgeslist_neighbors( myPajek.getEdgeslist() );
 
-    int j;
-    std::cout << "pause" << std::endl;
-    std::cin >> j; 
+    myNetwork.printNetworkNeighbors();
 
     myNetwork.distribute_puzzle();
 
@@ -50,7 +46,6 @@ int main(int argc, char *argv[])
 
         while( !(myNetwork.getPiecesLeft()).empty() )
             myNetwork.solve_step();
-        //solve_times.push_back( myNetwork.getTime() );
         myFile << count << '\t' << myNetwork.getTime() << '\n';
         myFile.flush();
         myNetwork.resetTime();
@@ -61,9 +56,5 @@ int main(int argc, char *argv[])
 
     myFile.close();
 
-//    for ( std::vector<int>::iterator it = solve_times.begin(); it != solve_times.end(); ++it )
-//        std::cout << *it << ' ';
-//    std::cout << std::endl;
-   
     return 0;
 }

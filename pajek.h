@@ -10,15 +10,19 @@ class Pajek {
     private:
         std::ifstream istream;
         int vertices;
-        std::vector<std::pair<int,int> > edge_list;
+        std::vector<std::pair<int,int> > arcs;
+        std::vector<std::vector<int> > edgeslist;
     public:
         Pajek( char const* file );
         int setVertices();
-        void setEdges();
-        std::vector<std::pair<int,int> > getEdges();
+        void setArcs();
+        void setEdgeslist();
         void convert_format();
-        void printEdges();
+        void printArcs();
+        void printEdgeslist();
         int getVertices();
+        std::vector<std::pair<int,int> > getArcs();
+        std::vector<std::vector<int> > getEdgeslist();
 };
 
 #endif

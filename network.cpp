@@ -192,81 +192,31 @@ void Network::distribute_puzzle()
     }
 }
 
-void Network::assign_neighbors3( std::vector< std::pair< int, int > > edge_vector )
+void Network::assign_arcs_neighbors( std::vector< std::pair< int, int > > arcs_vector )
 {
-    for ( std::vector< std::pair< int, int > >::iterator it = edge_vector.begin(); it != edge_vector.end(); ++it )
+    for ( std::vector< std::pair< int, int > >::iterator it = arcs_vector.begin(); it != arcs_vector.end(); ++it )
     {
         ((network.at( (*it).first )).neighbors).insert( (*it).second );
     }
 }
 
-
-void Network::assign_neighbors2( char *infile )
+void Network::assign_edgeslist_neighbors( std::vector<std::vector<int> > edgeslist_vector )
 {
-    std::string line;
-    std::string search = "*Arcs";
-    std::ifstream neighbor_input( infile );
-    std::vector<vertex>* vptr;
-    std::set<int>* sptr;
+    std::vector<std::vector<int> >::iterator row;
+    std::vector<int>::iterator col;
 
-    if ( neighbor_input.is_open() )
+    for ( row = edgeslist_vector.begin(); row != edgeslist_vector.end(); ++row )
     {
-        while ( std::getline( neighbor_input, line ) )
+        col = row->begin();
+        int first_col = *col;
+        ++col;
+        while ( col != row->end() )
         {
-           if ( line.find(search, 0) != std::string::npos )
-               break;
-        }
-        
-        while ( std::getline( neighbor_input, line ) )
-        {
-            int values[2];
-            std::istringstream(line) >> values[0] >> values[1];
-            ((network.at(values[0])).neighbors).insert(values[1]);
-            std::cout << values[0] << '\t' << values[1] << std::endl;
+            ((network.at( first_col )).neighbors).insert( *col );
+            ((network.at( *col )).neighbors).insert( first_col );
+            ++col;
         }
     }
-}
-
-// this method need to be adjusted so that the input is a stream
-void Network::assign_neighbors( char *infile )
-{   
-    int count = 0;
-
-    std::string line;
-    std::ifstream neighbor_input( infile );
-    std::vector<vertex>::iterator vecIt = network.begin();
-    if ( neighbor_input.is_open() )
-    {
-        while ( std::getline( neighbor_input, line ) )
-        {
-            std::stringstream ss(line);
-            int i;
-            while ( ss >> i )
-            {
-                if ( ss.peek() == ' ' )
-                    ss.ignore();
-                if ( i >= 0 )
-                    (vecIt->neighbors).insert(i);
-                else
-                    break;
-            }
-            ++vecIt;
-        }
-    }
-    /*for (std::vector<vertex>::iterator vecIt = network.begin(); vecIt != network.end(); ++vecIt )
-    {
-        std::cout << "Enter the neighbors for vertex " << count << ":\n";
-        while(1)
-        {
-            int neighbor;
-            std::cin >> neighbor;
-            if (neighbor >= 0)
-                (vecIt->neighbors).insert(neighbor);
-            else
-                break;
-        }
-        count++;
-    } */
 }
 
 void Network::solve_step()
