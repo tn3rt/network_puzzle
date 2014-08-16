@@ -200,6 +200,15 @@ void Network::assign_arcs_neighbors( std::vector< std::pair< int, int > > arcs_v
     }
 }
 
+void Network::assign_edges_neighbors( std::vector<std::pair<int,int> > edges_vector )
+{
+    for ( std::vector<std::pair<int,int> >::iterator it = edges_vector.begin(); it != edges_vector.end(); ++it )
+    {
+        (network.at( (*it).first ).neighbors).insert( (*it).second );
+        (network.at( (*it).second ).neighbors).insert( (*it).first );
+    }
+}
+
 void Network::assign_edgeslist_neighbors( std::vector<std::vector<int> > edgeslist_vector )
 {
     std::vector<std::vector<int> >::iterator row;

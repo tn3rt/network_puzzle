@@ -37,7 +37,8 @@ class Network {
         void printSolvePuzzle();
         void printPiecesLeft();
         void distribute_puzzle();
-        void assign_arcs_neighbors( std::vector<std::pair<int,int> >  );
+        void assign_arcs_neighbors( std::vector<std::pair<int,int> > );
+        void assign_edges_neighbors( std::vector<std::pair<int,int> > ) ;
         void assign_edgeslist_neighbors( std::vector<std::vector<int> > );
         vertex* pick_random_vertex();
         int pick_random_has( vertex* );

@@ -60,6 +60,36 @@ void Pajek::setArcs()
     }
 }
 
+void Pajek::setEdges()
+{
+    std::string line;
+    std::string search = "*Edges";
+    if ( istream.is_open() )
+    {
+        while ( std::getline( istream, line ) )
+        {
+            if ( line.find( search, 0 ) != std::string::npos &&
+                    line.size() == search.size() )
+            {
+                std::cout << "Found " << line << std::endl;
+                break;
+            }
+        }
+
+        while ( std::getline( istream, line ) )
+        {
+            if ( line.find_first_not_of("*") )
+                break;
+            std::pair<int,int> p;
+            std::istringstream(line) >> p.first >> p.second;
+
+            edges.push_back( p );
+        }
+        istream.clear();
+        istream.seekg(0,std::ios::beg);
+    }
+}
+
 void Pajek::setEdgeslist()
 {
     std::string line;
@@ -68,20 +98,13 @@ void Pajek::setEdgeslist()
     {
         while ( std::getline( istream, line ) )
         {
-            if ( line.find( search, 0 ) != std::string::npos )
+            if ( line.find( search, 0 ) != std::string::npos &&
+                    line.size() == search.size() )
             {
                 std::cout << "Found " << line << std::endl;
                 break;
             }
         }
-
-        /*while ( std::getline( istream, line ) )
-        {
-            if ( line.find_first_not_of("*") )
-                break;
-            std::cout << line << std::endl;
-            edgeslist.push_back( std::vector<int>( std::istream_iterator<int>(istream), std::istream_iterator<int>() ) );
-        }*/
 
         while ( std::getline( istream, line ) )
         {
@@ -99,12 +122,19 @@ void Pajek::setEdgeslist()
     }
 }
 
-// Get function that returns the arcs vector.
+// Get function returns arcs vector.
 std::vector<std::pair<int,int> > Pajek::getArcs()
 {
     return arcs;
 }
 
+// Get function returns edges vector.
+std::vector<std::pair<int,int> > Pajek::getEdges()
+{
+    return edges;
+}
+
+// Get function returns edgeslist vector.
 std::vector<std::vector<int> > Pajek::getEdgeslist()
 {
     return edgeslist;
@@ -116,6 +146,12 @@ void Pajek::convert_format()
 {
     // formats the arcs data structure
     for ( std::vector<std::pair<int,int> >::iterator it = arcs.begin(); it != arcs.end(); ++it )
+    {
+        (*it).first--;
+        (*it).second--;
+    }
+    // formats the edges data structure
+    for ( std::vector<std::pair<int,int> >::iterator it = edges.begin(); it != edges.end(); ++it )
     {
         (*it).first--;
         (*it).second--;
@@ -136,6 +172,14 @@ void Pajek::convert_format()
 void Pajek::printArcs()
 {
     for ( std::vector<std::pair< int, int > >::iterator it = arcs.begin(); it != arcs.end(); ++it )
+    {
+        std::cout << (*it).first << ' ' << (*it).second << std::endl;
+    }
+}
+
+void Pajek::printEdges()
+{
+    for ( std::vector<std::pair<int,int> >::iterator it = edges.begin(); it != edges.end(); ++it )
     {
         std::cout << (*it).first << ' ' << (*it).second << std::endl;
     }
