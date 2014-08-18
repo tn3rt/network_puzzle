@@ -29,14 +29,15 @@ int main(int argc, char *argv[])
     Network myNetwork( network_size, puzzle_size, coordination_number );
     
     //myPajek.setArcs();
+    myPajek.setArcslist();
     //myPajek.setEdgeslist();
-    myPajek.setEdges();
+    //myPajek.setEdges();
     myPajek.convert_format();
-    myPajek.printEdges();
+    myPajek.printArcslist();
     std::cout << "******************" << std::endl;
     //myNetwork.assign_arcs_neighbors( myPajek.getArcs() );
     //myNetwork.assign_edgeslist_neighbors( myPajek.getEdgeslist() );
-    myNetwork.assign_edges_neighbors( myPajek.getEdges() );
+    myNetwork.assign_arcslist_neighbors( myPajek.getArcslist() );
 
     myNetwork.printNetworkNeighbors();
 

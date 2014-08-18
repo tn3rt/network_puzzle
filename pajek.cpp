@@ -60,6 +60,42 @@ void Pajek::setArcs()
     }
 }
 
+void Pajek::setArcslist()
+{
+    std::string line;
+    std::string search = "*Arcslist";
+    
+    if ( istream.is_open() )
+    {
+        while ( std::getline( istream, line ) )
+        {
+            if ( line.find( search, 0 ) != std::string::npos &&
+                    line.size() == search.size() )
+            {
+                std::cout << "Found " << line << std::endl;
+                break;
+            }
+        }
+
+        while ( std::getline( istream, line ) )
+        {
+            if ( line.find_first_not_of("*") )
+                break;
+            std::istringstream iss(line);
+            int n;
+            std::vector<int> v;
+
+            while ( iss >> n )
+                v.push_back(n);
+
+            arcslist.push_back(v);
+        }
+        istream.clear();
+        istream.seekg(0,std::ios::beg);
+    }
+
+}
+
 void Pajek::setEdges()
 {
     std::string line;
@@ -108,6 +144,8 @@ void Pajek::setEdgeslist()
 
         while ( std::getline( istream, line ) )
         {
+            if ( line.find_first_not_of("*") )
+                break;
             std::istringstream iss(line);
             int n;
             std::vector<int> v;
@@ -126,6 +164,12 @@ void Pajek::setEdgeslist()
 std::vector<std::pair<int,int> > Pajek::getArcs()
 {
     return arcs;
+}
+
+// Get function returns arcslist vector.
+std::vector<std::vector<int> > Pajek::getArcslist()
+{
+    return arcslist;
 }
 
 // Get function returns edges vector.
@@ -150,6 +194,18 @@ void Pajek::convert_format()
         (*it).first--;
         (*it).second--;
     }
+
+    // formats the arcslist data structure
+    std::vector<std::vector<int> >::iterator row;
+    std::vector<int>::iterator col;
+    for ( row = arcslist.begin(); row != arcslist.end(); ++row )
+    {
+        for ( col = row->begin(); col != row->end(); ++col )
+        {
+            (*col)--;
+        }
+    }
+
     // formats the edges data structure
     for ( std::vector<std::pair<int,int> >::iterator it = edges.begin(); it != edges.end(); ++it )
     {
@@ -174,6 +230,16 @@ void Pajek::printArcs()
     for ( std::vector<std::pair< int, int > >::iterator it = arcs.begin(); it != arcs.end(); ++it )
     {
         std::cout << (*it).first << ' ' << (*it).second << std::endl;
+    }
+}
+
+void Pajek::printArcslist()
+{
+    for ( const std::vector<int> &v : arcslist )
+    {
+        for ( int x : v )
+            std::cout << x << ' ';
+        std::cout << std::endl;
     }
 }
 
