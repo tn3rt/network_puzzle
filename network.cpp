@@ -59,11 +59,20 @@ bool Network::insertHas( std::size_t index, int piece )
         right_piece = 0;
     else right_piece = piece+1;
 
+    // This if statement ensures that two adjacent pieces aren't given 
+    // to the same node in the network as the puzzle is being distributed
     if ( ((network.at(index)).has).find(left_piece) == ((network.at(index)).has).end() &&
             ((network.at(index)).has).find(right_piece) == ((network.at(index)).has).end())
     {
-        ((network.at(index)).has).insert(piece);
-        return true;
+        // This if statement ensures that nodes without any neighbors
+        // aren't given any puzzle pieces
+        if ( ((network.at(index)).neighbors).empty() )
+            return false;
+        else
+        {
+            ((network.at(index)).has).insert(piece);
+            return true;
+        }
     }
     else
         return false;
