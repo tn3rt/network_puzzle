@@ -41,6 +41,7 @@ class Network {
         void assign_arcslist_neighbors( std::vector<std::vector<int> > );
         void assign_edges_neighbors( std::vector<std::pair<int,int> > ) ;
         void assign_edgeslist_neighbors( std::vector<std::vector<int> > );
+        void assign_matrix_neighbors( std::vector<std::vector<int> > );
         vertex* pick_random_vertex();
         int pick_random_has( vertex* );
         int pick_random_knows( vertex* );

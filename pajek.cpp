@@ -160,6 +160,48 @@ void Pajek::setEdgeslist()
     }
 }
 
+void Pajek::setMatrix()
+{
+    std::string line;
+    std::string search = "*Matrix";
+    if ( istream.is_open() )
+    {
+        while ( std::getline( istream, line ) )
+        {
+            if ( line.find( search, 0 ) != std::string::npos &&
+                    line.size() == search.size() )
+            {
+                std::cout << "Found " << line << std::endl;
+                break;
+            }
+        }
+        
+        int line_count=0;
+        while ( std::getline( istream, line ) )
+        {
+            if ( line.find_first_not_of("*") )
+                break;
+            std::istringstream iss(line);
+            int n;
+            std::vector<int> v;
+            int count=0;
+            v.push_back(line_count);
+
+            while ( iss >> n )
+            {
+                count++;
+                if ( n == 1 )
+                    v.push_back( count );
+            }
+
+            matrix.push_back(v);
+            line_count++;
+        }
+        istream.clear();
+        istream.seekg(0,std::ios::beg);
+    }
+}
+
 // Get function returns arcs vector.
 std::vector<std::pair<int,int> > Pajek::getArcs()
 {
@@ -182,6 +224,11 @@ std::vector<std::pair<int,int> > Pajek::getEdges()
 std::vector<std::vector<int> > Pajek::getEdgeslist()
 {
     return edgeslist;
+}
+
+std::vector<std::vector<int> > Pajek::getMatrix()
+{
+    return matrix;
 }
 
 // This function is needed because Pajek files begin counting at 1.
@@ -259,6 +306,16 @@ void Pajek::printEdgeslist()
           std::cout << x << ' ';
       std::cout << std::endl;
   }
+}
+
+void Pajek::printMatrix()
+{
+    for ( const std::vector<int> &v : matrix )
+    {
+        for ( int x : v )
+            std::cout << x << ' ';
+        std::cout << std::endl;
+    }
 }
 
 int Pajek::getVertices()

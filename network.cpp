@@ -256,6 +256,24 @@ void Network::assign_edgeslist_neighbors( std::vector<std::vector<int> > edgesli
     }
 }
 
+void Network::assign_matrix_neighbors( std::vector<std::vector<int> > matrix_vector )
+{
+    std::vector<std::vector<int> >::iterator row;
+    std::vector<int>::iterator col;
+
+    for ( row = matrix_vector.begin(); row != matrix_vector.end(); ++row )
+    {
+        col = row->begin();
+        int first_col = *col;
+        ++col;
+        while ( col != row->end() )
+        {
+            ((network.at( first_col )).neighbors).insert( *col );
+            ++col;
+        }
+    }
+}
+
 void Network::solve_step()
 {
     // piece p is matched with 'right' or 'left' 
