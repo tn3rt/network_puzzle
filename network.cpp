@@ -9,8 +9,9 @@
 #include <sstream>
 #include "network.h"
 
-typedef std::vector<vertex>::iterator netIt;
+using namespace std;
 
+// constructor
 Network::Network( int net_size, int puz_size, int z )
 {
     network_size = net_size;
@@ -25,15 +26,18 @@ Network::Network( int net_size, int puz_size, int z )
     }
     for (int i=0; i < puz_size; ++i)
     {
-        solved_puzzle.push_back( std::make_pair( -1, -1 ) );
+        solved_puzzle.push_back( make_pair( -1, -1 ) );
         pieces_left.insert(i);
     }
 }
 
-int Network::getNetworkSize()
-{
-    return network_size;
-}
+// get functions
+int Network::getNetworkSize() { return network_size; }
+int Network::getTime() { return time; }
+set<int> Network::getHas( size_t index ) { return (network.at(index)).has; }
+set<int> Network::getPiecesLeft() { return pieces_left; }
+vertex Network::getVertex( size_t index ) { return network.at(index); }
+
 
 void Network::networkReset()
 {
@@ -41,12 +45,12 @@ void Network::networkReset()
     pieces_left.clear();
     for (int i=0; i < puzzle_size; ++i)
     {
-        solved_puzzle.push_back( std::make_pair( -1, -1 ) );
+        solved_puzzle.push_back( make_pair( -1, -1 ) );
         pieces_left.insert(i);
     }  
 }
 
-bool Network::insertHas( std::size_t index, int piece )
+bool Network::insertHas( size_t index, int piece )
 {
     int left_piece, right_piece;
     
@@ -78,141 +82,137 @@ bool Network::insertHas( std::size_t index, int piece )
         return false;
 }
 
-std::set<int> Network::getHas( std::size_t index )
-{
-    return (network.at(index)).has;
-}
-
-std::set<int> Network::getPiecesLeft()
-{
-    return pieces_left;
-}
 
 void Network::resetTime()
 {
     time = 0;
 }
 
-int Network::getTime()
+// argument: Network node index
+// return: (void) prints the integers possessed by the node
+void Network::printHas( size_t index )
 {
-    return time;
-}
-
-vertex Network::getVertex( std::size_t index )
-{
-    return network.at(index);
-}
-
-void Network::printHas( std::size_t index )
-{
-    for (std::set<int>::iterator it = ((network.at(index)).has).begin(); it != ((network.at(index)).has).end(); ++it )
+    for ( auto it : (network.at(index)).has )
     {
-        std::cout << *it << ' ';
+        cout << it << ' ';
     }
-    std::cout << std::endl;
+    cout << endl;
 }
 
-void Network::printKnows( std::size_t index )
+// argument: Network node index
+// return: (void) prints the integers that the node knows about
+void Network::printKnows( size_t index )
 {
-    for (std::set<int>::iterator it = ((network.at(index)).has).begin(); it != ((network.at(index)).has).end(); ++it )
+    for ( auto it : (network.at(index)).has ) 
     {
-        std::cout << *it << ' ';
+        cout << it << ' ';
     }
-    std::cout << std::endl;
+    cout << endl;
 }
 
+// argument: none
+// return: (void) prints the integers each node in the network has
 void Network::printNetworkHas()
 {
-    std::cout << "Network Has: ";
+    cout << "Network Has: ";
     int i=0;
-    for (std::vector<vertex>::iterator vecIt = network.begin(); vecIt != network.end(); ++vecIt )
+    for ( auto vecIt : network )
     {
-        std::cout << "\nNode " << i << ": ";
-        for (std::set<int>::iterator setIt = (vecIt->has).begin(); setIt != (vecIt->has).end(); ++setIt )
+        cout << "\nNode " << i << ": ";
+        for ( auto setIt : vecIt.has )
         {
-            std::cout << *setIt << ' ';
+            cout << setIt << ' ';
         }
         i++;
-        std::cout << std::endl;
+        cout << endl;
     }
 }
 
+// argument: none
+// return: (void) prints the integers each node in the network knows
 void Network::printNetworkKnows()
 {
-    std::cout << "Network Knows: ";
+    cout << "Network Knows: ";
     int i=0;
-    for (std::vector<vertex>::iterator vecIt = network.begin(); vecIt != network.end(); ++vecIt )
+    for ( auto vecIt : network )
     {
-        std::cout << "\nNode " << i << ": ";
-        for (std::set<int>::iterator setIt = (vecIt->knows).begin(); setIt != (vecIt->knows).end(); ++setIt )
+        cout << "\nNode " << i << ": ";
+        for ( auto setIt : vecIt.knows )
         {
-            std::cout << *setIt << ' ';
+            cout << setIt << ' ';
         }
         i++;
-        std::cout << std::endl;
+        cout << endl;
     }
 }
 
+// argument: none
+// return: (void) prints the neighbors for each node in the network
 void Network::printNetworkNeighbors()
 {
-    for (std::vector<vertex>::iterator vecIt = network.begin(); vecIt != network.end(); ++vecIt )
+    for ( auto vecIt : network )
     {
-        for (std::set<int>::iterator setIt = (vecIt->neighbors).begin(); setIt != (vecIt->neighbors).end(); ++setIt )
+        for ( auto setIt : vecIt.neighbors )
         {
-            std::cout << *setIt << ' ';
+            cout << setIt << ' ';
         }
-        std::cout << std::endl;
+        cout << endl;
     }
 }
 
+// argument: none
+// return: (void) prints the solved puzzle
 void Network::printSolvePuzzle()
 {
     int i = 0;
-    for ( std::vector<std::pair<int,int> >::iterator it = solved_puzzle.begin(); it != solved_puzzle.end(); ++it )
+    for ( auto it : solved_puzzle )
     {
-        std::cout << "Puzzle piece: " << i << "\tSolved: " << (*it).first << '\t' << (*it).second << std::endl;
+        cout << "Puzzle piece: " << i << "\tSolved: " << it.first << '\t' << it.second << endl;
         i++;
     }
 }
 
+// argument: none
+// return: (void) prints the pieces left to solve for
 void Network::printPiecesLeft()
 {
-    for ( std::set<int>::iterator it = pieces_left.begin(); it != pieces_left.end(); ++it )
-        std::cout << *it << ' ';
-    std::cout << std::endl;
+    for ( auto it : pieces_left )
+        cout << it << ' ';
+    cout << endl;
 }
+
 
 void Network::distribute_puzzle()
 {
     // Initialize RNG 
     // Generate a random network node with network_udist(gen)
-    std::random_device rand_dev;
-    std::mt19937_64 gen( rand_dev() );
-    std::uniform_int_distribution<int> network_udist( 0, network_size-1 );
+    random_device rand_dev;
+    mt19937_64 gen( rand_dev() );
+    uniform_int_distribution<int> network_udist( 0, network_size-1 );
 
     for (int i=0; i < puzzle_size; ++i )
     {
         bool insert=false;
         while( insert == false )
         {
-            if( insertHas( (std::size_t)network_udist(gen), i ) == true)
+            if( insertHas( (size_t)network_udist(gen), i ) == true)
                 insert=true;
         }
     }
 }
 
-void Network::assign_arcs_neighbors( std::vector< std::pair< int, int > > arcs_vector )
+void Network::assign_arcs_neighbors( vector<pair<int,int> > arcs_vector )
 {
-    for ( std::vector< std::pair< int, int > >::iterator it = arcs_vector.begin(); it != arcs_vector.end(); ++it )
+    for ( auto it : arcs_vector )
     {
-        ((network.at( (*it).first )).neighbors).insert( (*it).second );
+        ((network.at( it.first )).neighbors).insert( it.second );
     }
 }
 
-void Network::assign_arcslist_neighbors( std::vector<std::vector<int> > arcslist_vector )
+void Network::assign_arcslist_neighbors( vector<vector<int> > arcslist_vector )
 {
-    std::vector<std::vector<int> >::iterator row;
-    std::vector<int>::iterator col;
+    vector<vector<int> >::iterator row;
+    vector<int>::iterator col;
 
     for ( row = arcslist_vector.begin(); row != arcslist_vector.end(); ++row )
     {
@@ -228,19 +228,19 @@ void Network::assign_arcslist_neighbors( std::vector<std::vector<int> > arcslist
     }
 }
 
-void Network::assign_edges_neighbors( std::vector<std::pair<int,int> > edges_vector )
+void Network::assign_edges_neighbors( vector<pair<int,int> > edges_vector )
 {
-    for ( std::vector<std::pair<int,int> >::iterator it = edges_vector.begin(); it != edges_vector.end(); ++it )
+    for ( auto it = edges_vector.begin(); it != edges_vector.end(); ++it )
     {
         (network.at( (*it).first ).neighbors).insert( (*it).second );
         (network.at( (*it).second ).neighbors).insert( (*it).first );
     }
 }
 
-void Network::assign_edgeslist_neighbors( std::vector<std::vector<int> > edgeslist_vector )
+void Network::assign_edgeslist_neighbors( vector<vector<int> > edgeslist_vector )
 {
-    std::vector<std::vector<int> >::iterator row;
-    std::vector<int>::iterator col;
+    vector<vector<int> >::iterator row;
+    vector<int>::iterator col;
 
     for ( row = edgeslist_vector.begin(); row != edgeslist_vector.end(); ++row )
     {
@@ -256,10 +256,10 @@ void Network::assign_edgeslist_neighbors( std::vector<std::vector<int> > edgesli
     }
 }
 
-void Network::assign_matrix_neighbors( std::vector<std::vector<int> > matrix_vector )
+void Network::assign_matrix_neighbors( vector<vector<int> > matrix_vector )
 {
-    std::vector<std::vector<int> >::iterator row;
-    std::vector<int>::iterator col;
+    vector<vector<int> >::iterator row;
+    vector<int>::iterator col;
 
     for ( row = matrix_vector.begin(); row != matrix_vector.end(); ++row )
     {
@@ -281,9 +281,9 @@ void Network::solve_step()
     // pointer to the neighboring vertex
     vertex* neighbor_ptr;
 
-    std::random_device rand_dev;
-    std::mt19937_64 gen( rand_dev() );
-    std::uniform_real_distribution<double> prob(0,1);
+    random_device rand_dev;
+    mt19937_64 gen( rand_dev() );
+    uniform_real_distribution<double> prob(0,1);
 
     // Pick a random vertex
     vertex* v_ptr = pick_random_vertex();
@@ -299,17 +299,17 @@ void Network::solve_step()
     if ( !((v_ptr->knows).empty()) && !((v_ptr->has).empty()) )
     {
          prob(gen) > 0.5 ? p = pick_random_has(v_ptr) : p = pick_random_knows(v_ptr);
-         //std::cout << "neither knows or has is empty." << std::endl;
+         //cout << "neither knows or has is empty." << endl;
     }
     else if ( (v_ptr->knows).empty() && !((v_ptr->has).empty()) )
     {
         p = pick_random_has( v_ptr );
-        //std::cout << "knows is empty. " << std::endl;
+        //cout << "knows is empty. " << endl;
     }
     else if ( !((v_ptr->knows).empty()) && (v_ptr->has).empty() )
     {
         p = pick_random_knows( v_ptr );
-        //std::cout << "has is empty. " << std::endl;
+        //cout << "has is empty. " << endl;
     }
     else
     {
@@ -332,14 +332,14 @@ void Network::solve_step()
     {
         (solved_puzzle.at(p)).second=right;
         (solved_puzzle.at(right)).first=p;
-        //std::cout << "I found a match! " << p << " and " << right << std::endl;
+        //cout << "I found a match! " << p << " and " << right << endl;
         k = true;
     }
     if ( (neighbor_ptr->knows).find(left) != (neighbor_ptr->knows).end() )
     {
         (solved_puzzle.at(p)).first=left; 
         (solved_puzzle.at(left)).second=p;
-        //std::cout << "I found a match! " << p << " and " << left << std::endl;
+        //cout << "I found a match! " << p << " and " << left << endl;
         k = true;
     }
 
@@ -354,14 +354,14 @@ void Network::solve_step()
         {
             (solved_puzzle.at(p)).second=right;
             (solved_puzzle.at(right)).first=p;
-            //std::cout << "I found a match! " << p << " and " << right << std::endl;
+            //cout << "I found a match! " << p << " and " << right << endl;
         }
 
         if ( (neighbor_ptr->has).find(left) != (neighbor_ptr->has).end() )
         {
             (solved_puzzle.at(p)).first=left;
             (solved_puzzle.at(left)).second=p;
-            //std::cout << "I found a match! " << p << " and " << left << std::endl;
+            //cout << "I found a match! " << p << " and " << left << endl;
         }
     } 
 
@@ -370,7 +370,7 @@ void Network::solve_step()
     {
         pieces_left.erase(p);
         // iterate over network and erase p from 'knows' and 'has'
-        for (netIt it = network.begin(); it != network.end(); ++it )
+        for (auto it = network.begin(); it != network.end(); ++it )
         {
             if ( (it->knows).find(p) != (it->knows).end() )
                 (it->knows).erase(p);
@@ -382,7 +382,7 @@ void Network::solve_step()
     {
         pieces_left.erase(right);
         // iterate over network and erase 'right' from 'knows' and 'has'
-        for (netIt it = network.begin(); it != network.end(); ++it )
+        for (auto it = network.begin(); it != network.end(); ++it )
         {
             if ( (it->knows).find(right) != (it->knows).end() )
                 (it->knows).erase(right);
@@ -394,7 +394,7 @@ void Network::solve_step()
     {
         pieces_left.erase(left);
         // iterate over network and erase 'left' from 'knows' and 'has'
-        for (netIt it = network.begin(); it != network.end(); ++it )
+        for (auto it = network.begin(); it != network.end(); ++it )
         {
             if ( (it->knows).find(left) != (it->knows).end() )
                 (it->knows).erase(left);
@@ -406,49 +406,53 @@ void Network::solve_step()
 
 vertex* Network::pick_random_vertex()
 {
-    std::random_device rand_dev;
-    std::mt19937_64 gen( rand_dev() );
-    std::uniform_int_distribution<int> network_udist( 0, network_size-1 );
+    random_device rand_dev;
+    mt19937_64 gen( rand_dev() );
+    uniform_int_distribution<int> network_udist( 0, network_size-1 );
     int rand = network_udist(gen);
-    //std::cout << "Random Vertex..." << rand << std::endl;
+    //cout << "Random Vertex..." << rand << endl;
     vertex* v_ptr = &network.at(rand);
-    //std::cout << "made it. " << std::endl;
+    //cout << "made it. " << endl;
     //vertex* v_ptr = &network.at(network_udist(gen));
     return v_ptr;
 }
 
 int Network::pick_random_has( vertex* V )
 {
-    std::random_device rand_dev;
-    std::mt19937_64 gen( rand_dev() );
-    std::uniform_int_distribution<int> has_udist( 0, (V->has).size()-1 );
+    random_device rand_dev;
+    mt19937_64 gen( rand_dev() );
+    uniform_int_distribution<int> has_udist( 0, (V->has).size()-1 );
 
-    int rand = *std::next((V->has).begin(), has_udist(gen) );
-    //std::cout << "Random has..." << rand << std::endl;
+    int rand = *next((V->has).begin(), has_udist(gen) );
+    //cout << "Random has..." << rand << endl;
     return rand;
 
 }
 
+// argument: pointer to vertex
+// return: returns a randomly-chosen known integer from the node
 int Network::pick_random_knows( vertex* V )
 {
-    std::random_device rand_dev;
-    std::mt19937_64 gen( rand_dev() );
-    std::uniform_int_distribution<int> knows_udist( 0, (V->knows).size()-1 );
+    random_device rand_dev;
+    mt19937_64 gen( rand_dev() );
+    uniform_int_distribution<int> knows_udist( 0, (V->knows).size()-1 );
 
-    int rand = *std::next((V->knows).begin(), knows_udist(gen) );
-    //std::cout << "Random knows..." << rand << std::endl;
+    int rand = *next((V->knows).begin(), knows_udist(gen) );
+    //cout << "Random knows..." << rand << endl;
     return rand;
 }
 
+// argument: pointer to vertex
+// return: returns a randomly-chosen has integer from the node
 vertex* Network::pick_random_neighbor( vertex* V )
 {
 
-    std::random_device rand_dev;
-    std::mt19937_64 gen( rand_dev() );
-    std::uniform_int_distribution<int> neighbors_udist( 0, (V->neighbors).size()-1 );
+    random_device rand_dev;
+    mt19937_64 gen( rand_dev() );
+    uniform_int_distribution<int> neighbors_udist( 0, (V->neighbors).size()-1 );
 
-    int rand = *std::next((V->neighbors).begin(), neighbors_udist(gen) );
-    //std::cout << "Random neighbor..." << rand << std::endl;
+    int rand = *next((V->neighbors).begin(), neighbors_udist(gen) );
+    //cout << "Random neighbor..." << rand << endl;
     vertex* v_ptr = &network.at(rand);
     return v_ptr;
 }

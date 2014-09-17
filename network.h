@@ -21,13 +21,15 @@ class Network {
         std::set<int> pieces_left;
     public:
         Network( int, int, int );
+        
         int getNetworkSize();
+        int getTime();
+        std::set<int> getHas( std::size_t );
+        std::set<int> getPiecesLeft();
+        vertex getVertex( std::size_t );
+    
         void networkReset();
         bool insertHas( std::size_t, int );
-        std::set<int> getHas( std::size_t );
-        vertex getVertex( std::size_t );
-        std::set<int> getPiecesLeft();
-        int getTime();
         void resetTime();
         void printHas( std::size_t);
         void printKnows( std::size_t );

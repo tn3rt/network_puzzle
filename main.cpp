@@ -9,16 +9,18 @@
 #include "network.h"
 #include "pajek.h"
 
-typedef std::set<int>::iterator setIt;
+using namespace std;
+
+typedef set<int>::iterator setIt;
 
 int main(int argc, char *argv[])
 {
     if (argc < 4)
-        std::cout << "Usage: " << argv[0] << " <output filename> <puzzle size> <input file>" << std::endl;
+        cout << "Usage: " << argv[0] << " <output filename> <puzzle size> <input file>" << endl;
 
     int count = 1;
-    std::ofstream myFile;
-    myFile.open(argv[1], std::ios::app );
+    ofstream myFile;
+    myFile.open(argv[1], ios::app );
     
     Pajek myPajek( argv[3] );
     int network_size = myPajek.setVertices();
@@ -36,28 +38,29 @@ int main(int argc, char *argv[])
     
     myPajek.convert_format();
     
-    //myPajek.printArcs();
+    myPajek.printArcs();
     //myPajek.printArcslist();
     //myPajek.printEdges();
     //myPajek.printEdgeslist();
-    myPajek.printMatrix();
+    //myPajek.printMatrix();
 
-    std::cout << "******************" << std::endl;
+    cout << "******************" << endl;
     //myNetwork.assign_arcs_neighbors( myPajek.getArcs() );
     //myNetwork.assign_arcslist_neighbors( myPajek.getArcslist() );
     //myNetwork.assign_edges_neighbors( myPajek.getEdges() );
     //myNetwork.assign_edgeslist_neighbors( myPajek.getEdgeslist() );
     myNetwork.assign_matrix_neighbors( myPajek.getMatrix() );
 
-    myNetwork.printNetworkNeighbors();
-
+    //myNetwork.printNetworkNeighbors();
+    
     myNetwork.distribute_puzzle();
+    myNetwork.printHas( 4 );
 
 //    while(1)
     for (int i=0; i<10000; ++i)
     {
         if (count % 5 == 0 )
-            std::cout << "Count: " << count << std::endl;
+            cout << "Count: " << count << endl;
 
         while( !(myNetwork.getPiecesLeft()).empty() )
             myNetwork.solve_step();
